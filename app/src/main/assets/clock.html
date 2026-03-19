@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Analog Saat Wallpaper</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0c;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --silver: #8a8a9a;
+    --white: #f0ede8;
+    --hour-color: #e8c97a;
+    --min-color: #d0d0d8;
+    --sec-color: #e05a3a;
+  }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    color: var(--white);
+    /* 9:21 aspect ratio for 1080x2400 */
+    aspect-ratio: 9/21;
+    max-width: 100vw;
+    max-height: 100vh;
+    margin: auto;
+  }
+
+  /* Radial bg glow */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 45%, #161620 0%, #0a0a0c 65%),
+      radial-gradient(ellipse 40% 30% at 50% 45%, #1e1830 0%, transparent 70%);
+    z-index: -2;
+  }
+
+  /* Noise grain */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    z-index: -1;
+  }
+
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(1rem, 4vw, 2.5rem);
+    width: 100%;
+    padding: 0 clamp(1rem, 5vw, 3rem);
+  }
+
+  /* Date */
+  .date-line {
+    font-size: clamp(0.65rem, 2.5vw, 1rem);
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    opacity: 0.6;
+    text-transform: uppercase;
+  }
+
+  /* SVG clock */
+  .clock-wrap {
+    width: min(80vw, 70vh, 500px);
+    filter: drop-shadow(0 0 60px rgba(201,168,76,0.1))
+            drop-shadow(0 0 120px rgba(100,80,180,0.05));
+  }
+
+  .clock-wrap svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Digital time */
+  .digital-time {
+    font-size: clamp(1.2rem, 5vw, 2rem);
+    letter-spacing: 0.3em;
+    color: var(--silver);
+    opacity: 0.7;
+  }
+  .digital-time .hrs { color: var(--gold-light); opacity: 1; }
+
+  /* Divider */
+  .divider {
+    width: 40%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold) 50%, transparent);
+    opacity: 0.25;
+  }
+
+  /* Angle cards */
+  .angles-panel {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.5rem, 2vw, 1rem);
+    width: 100%;
+  }
+
+  .angle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: clamp(0.5rem, 2vw, 0.9rem) clamp(0.8rem, 3vw, 1.4rem);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 3px;
+    background: rgba(255,255,255,0.02);
+    backdrop-filter: blur(4px);
+  }
+
+  .angle-row-left {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.5rem, 2vw, 1rem);
+  }
+
+  .dot {
+    width: clamp(6px, 1.5vw, 10px);
+    height: clamp(6px, 1.5vw, 10px);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .angle-name {
+    font-size: clamp(0.55rem, 1.8vw, 0.75rem);
+    letter-spacing: 0.1em;
+    opacity: 0.5;
+    text-transform: uppercase;
+  }
+
+  .angle-val {
+    font-size: clamp(0.9rem, 3vw, 1.3rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  /* Bottom label */
+  .bottom-label {
+    font-size: clamp(0.45rem, 1.5vw, 0.6rem);
+    letter-spacing: 0.25em;
+    opacity: 0.2;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="date-line" id="dateLine">—</div>
+
+  <div class="clock-wrap">
+    <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#3a3a44"/>
+          <stop offset="40%" stop-color="#c9a84c" stop-opacity="0.5"/>
+          <stop offset="100%" stop-color="#2a2a30"/>
+        </linearGradient>
+        <radialGradient id="faceGrad" cx="45%" cy="38%">
+          <stop offset="0%" stop-color="#1a1a22"/>
+          <stop offset="100%" stop-color="#0d0d10"/>
+        </radialGradient>
+        <filter id="glowH">
+          <feGaussianBlur stdDeviation="3" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glowM">
+          <feGaussianBlur stdDeviation="2.5" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glowS">
+          <feGaussianBlur stdDeviation="2" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <!-- Rings -->
+      <circle cx="200" cy="200" r="197" fill="none" stroke="url(#ringGrad)" stroke-width="1.5"/>
+      <circle cx="200" cy="200" r="192" fill="none" stroke="#222228" stroke-width="0.5"/>
+      <!-- Face -->
+      <circle cx="200" cy="200" r="188" fill="url(#faceGrad)"/>
+
+      <!-- Ticks -->
+      <g id="ticks"></g>
+      <!-- Hour numbers -->
+      <g id="hourNums" font-family="'Playfair Display',serif" font-size="17" fill="#c9a84c"
+         text-anchor="middle" dominant-baseline="central" opacity="0.9"></g>
+
+      <!-- Angle arcs -->
+      <g id="arcHM" opacity="0.45"></g>
+      <g id="arcMS" opacity="0.35"></g>
+      <g id="arcHS" opacity="0.3"></g>
+
+      <!-- Hour hand -->
+      <g filter="url(#glowH)">
+        <line id="hourGlow" x1="200" y1="200" x2="200" y2="200"
+              stroke="rgba(232,201,122,0.18)" stroke-width="14" stroke-linecap="round"/>
+        <line id="hourHand" x1="200" y1="200" x2="200" y2="200"
+              stroke="#e8c97a" stroke-width="8" stroke-linecap="round"/>
+      </g>
+
+      <!-- Minute hand -->
+      <g filter="url(#glowM)">
+        <line id="minGlow" x1="200" y1="200" x2="200" y2="200"
+              stroke="rgba(208,208,216,0.12)" stroke-width="10" stroke-linecap="round"/>
+        <line id="minHand" x1="200" y1="200" x2="200" y2="200"
+              stroke="#d0d0d8" stroke-width="5" stroke-linecap="round"/>
+      </g>
+
+      <!-- Second hand -->
+      <g filter="url(#glowS)">
+        <line id="secTail" x1="200" y1="200" x2="200" y2="200"
+              stroke="#e05a3a" stroke-width="2.5" stroke-linecap="round"/>
+        <line id="secHand" x1="200" y1="200" x2="200" y2="200"
+              stroke="#e05a3a" stroke-width="2.5" stroke-linecap="round"/>
+        <circle id="secDot" cx="200" cy="200" r="5" fill="#e05a3a"/>
+      </g>
+
+      <!-- Center -->
+      <circle cx="200" cy="200" r="8" fill="#c9a84c"/>
+      <circle cx="200" cy="200" r="5" fill="#0d0d10"/>
+      <circle cx="200" cy="200" r="2.5" fill="#e8c97a"/>
+    </svg>
+  </div>
+
+  <div class="digital-time">
+    <span class="hrs" id="dHrs">00</span>:<span id="dMin">00</span>:<span id="dSec">00</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="angles-panel">
+    <div class="angle-row">
+      <div class="angle-row-left">
+        <div class="dot" style="background:#e8c97a; box-shadow:0 0 6px #e8c97a88"></div>
+        <div class="angle-name">Akrep – Yelkovan</div>
+      </div>
+      <div class="angle-val" id="angHM" style="color:#e8c97a">—°</div>
+    </div>
+    <div class="angle-row">
+      <div class="angle-row-left">
+        <div class="dot" style="background:#d0d0d8; box-shadow:0 0 6px #d0d0d866"></div>
+        <div class="angle-name">Yelkovan – Saniye</div>
+      </div>
+      <div class="angle-val" id="angMS" style="color:#d0d0d8">—°</div>
+    </div>
+    <div class="angle-row">
+      <div class="angle-row-left">
+        <div class="dot" style="background:#e05a3a; box-shadow:0 0 6px #e05a3a88"></div>
+        <div class="angle-name">Akrep – Saniye</div>
+      </div>
+      <div class="angle-val" id="angHS" style="color:#e05a3a">—°</div>
+    </div>
+  </div>
+
+  <div class="bottom-label">İbre Açı Ölçer</div>
+
+</div>
+
+<script>
+const ns = 'http://www.w3.org/2000/svg';
+const cx = 200, cy = 200;
+
+// Ticks
+const ticksG = document.getElementById('ticks');
+for (let i = 0; i < 60; i++) {
+  const a = (i / 60) * 2 * Math.PI;
+  const isH = i % 5 === 0;
+  const r1 = isH ? 170 : 178, r2 = 188;
+  const line = document.createElementNS(ns, 'line');
+  line.setAttribute('x1', cx + r1*Math.sin(a));
+  line.setAttribute('y1', cy - r1*Math.cos(a));
+  line.setAttribute('x2', cx + r2*Math.sin(a));
+  line.setAttribute('y2', cy - r2*Math.cos(a));
+  line.setAttribute('stroke', isH ? '#c9a84c' : '#2e2e36');
+  line.setAttribute('stroke-width', isH ? '2.5' : '1');
+  ticksG.appendChild(line);
+}
+
+// Hour numbers
+const numsG = document.getElementById('hourNums');
+for (let i = 1; i <= 12; i++) {
+  const a = (i/12)*2*Math.PI;
+  const r = 152;
+  const t = document.createElementNS(ns, 'text');
+  t.setAttribute('x', cx + r*Math.sin(a));
+  t.setAttribute('y', cy - r*Math.cos(a));
+  t.textContent = i;
+  numsG.appendChild(t);
+}
+
+function setLine(id, angleDeg, len) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const rad = (angleDeg - 90) * Math.PI / 180;
+  el.setAttribute('x1', cx); el.setAttribute('y1', cy);
+  el.setAttribute('x2', cx + len*Math.cos(rad));
+  el.setAttribute('y2', cy + len*Math.sin(rad));
+}
+
+function angleBetween(a, b) {
+  let d = Math.abs(a - b) % 360;
+  return Math.min(d, 360 - d);
+}
+
+function drawArc(gId, startDeg, endDeg, r, color) {
+  const g = document.getElementById(gId);
+  while (g.firstChild) g.removeChild(g.firstChild);
+  const sweep = ((endDeg - startDeg) % 360 + 360) % 360;
+  if (sweep < 1) return;
+  const s = (startDeg - 90) * Math.PI / 180;
+  const e = (endDeg - 90) * Math.PI / 180;
+  const p = document.createElementNS(ns, 'path');
+  p.setAttribute('d', `M ${cx+r*Math.cos(s)} ${cy+r*Math.sin(s)} A ${r} ${r} 0 ${sweep>180?1:0} 1 ${cx+r*Math.cos(e)} ${cy+r*Math.sin(e)}`);
+  p.setAttribute('stroke', color);
+  p.setAttribute('stroke-width', '2');
+  p.setAttribute('fill', 'none');
+  p.setAttribute('stroke-dasharray', '4 4');
+  g.appendChild(p);
+}
+
+const TR_DAYS = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+const TR_MONTHS = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+const pad = n => String(n).padStart(2,'0');
+
+function update() {
+  const now = new Date();
+  const h = now.getHours() % 12;
+  const m = now.getMinutes();
+  const s = now.getSeconds();
+  const ms = now.getMilliseconds();
+
+  const secAngle  = (s + ms/1000) * 6;
+  const minAngle  = (m + (s + ms/1000)/60) * 6;
+  const hourAngle = (h + m/60 + s/3600) * 30;
+  const secRad    = (secAngle - 90) * Math.PI / 180;
+
+  // Hands
+  setLine('hourHand', hourAngle, 100);
+  setLine('hourGlow', hourAngle, 100);
+  setLine('minHand',  minAngle,  142);
+  setLine('minGlow',  minAngle,  142);
+  setLine('secHand',  secAngle,  158);
+
+  // Sec tail
+  const t = document.getElementById('secTail');
+  t.setAttribute('x1', cx); t.setAttribute('y1', cy);
+  t.setAttribute('x2', cx - 38*Math.cos(secRad));
+  t.setAttribute('y2', cy - 38*Math.sin(secRad));
+
+  // Sec dot
+  const d = document.getElementById('secDot');
+  d.setAttribute('cx', cx + 122*Math.cos(secRad));
+  d.setAttribute('cy', cy + 122*Math.sin(secRad));
+
+  // Arcs
+  drawArc('arcHM', hourAngle, minAngle, 58, 'rgba(232,201,122,0.9)');
+  drawArc('arcMS', minAngle,  secAngle, 75, 'rgba(208,208,216,0.8)');
+  drawArc('arcHS', hourAngle, secAngle, 42, 'rgba(224,90,58,0.7)');
+
+  // Angles
+  const aHM = angleBetween(hourAngle, minAngle);
+  const aMS = angleBetween(minAngle,  secAngle);
+  const aHS = angleBetween(hourAngle, secAngle);
+  document.getElementById('angHM').textContent = aHM.toFixed(1) + '°';
+  document.getElementById('angMS').textContent = aMS.toFixed(1) + '°';
+  document.getElementById('angHS').textContent = aHS.toFixed(1) + '°';
+
+  // Digital
+  document.getElementById('dHrs').textContent = pad(now.getHours());
+  document.getElementById('dMin').textContent = pad(m);
+  document.getElementById('dSec').textContent = pad(s);
+
+  // Date
+  document.getElementById('dateLine').textContent =
+    `${TR_DAYS[now.getDay()]}  ${now.getDate()} ${TR_MONTHS[now.getMonth()]} ${now.getFullYear()}`;
+
+  requestAnimationFrame(update);
+}
+
+update();
+</script>
+</body>
+</html>
